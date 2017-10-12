@@ -7,9 +7,9 @@ use core\Pagination;
 
 class UsersController
 {
-    function __construct() {
-        checkExist();
-    }
+	function __construct() {
+		checkExist();
+	}
 	public function index()
 	{
 		$link_full='/admin/users?p={page}';
@@ -206,9 +206,9 @@ class UsersController
 		}
 	}
 
-		public function pagination($count,$link_full)
-		{
-			$config = array(
+	public function pagination($count,$link_full)
+	{
+		$config = array(
 			    'current_page'  => isset($_GET['p']) ? $_GET['p'] : 1, // Trang hiện tại
 			    'total_record'  => $count, // Tổng số record
 			 	//  'limit'         => 10,// limit
@@ -216,14 +216,16 @@ class UsersController
 			    'link_first'    => str_replace('{page}', '1', $link_full),// Link trang đầu tiên
 			    'range'         => 9, // Số button trang bạn muốn hiển thị 
 			    );
-			$paging = new Pagination();
-			$paging->init($config);
-			$paginghtml = $paging->html();
-			return  array('config' => $paging->_config, 'paginghtml' => $paginghtml, );
-		} 
+		$paging = new Pagination();
+		$paging->init($config);
+		$paginghtml = $paging->html();
+		return  array('config' => $paging->_config, 'paginghtml' => $paginghtml, );
+	} 
 
 
-		public function search()
+	public function search()
+	{
+		if(isset($_REQUEST['search'])||isset($_REQUEST['username']))
 		{
 			$username=$_REQUEST['username'];
 			$fullname=$_REQUEST['fullname'];
@@ -247,7 +249,10 @@ class UsersController
 			$current_page = $pagination['config']['current_page'];
 			$users=Users::allSearch($current_page,$limit,$search_User);	
 			return view('admin/users/index',['users'=>$users, 'paginghtml'=>$paginghtml,'search_User'=>$search_User]);
+		} else {
+			return redirect('admin/users');		
 		}
+	}
 
 	public function checkUsername()
 	{
@@ -292,4 +297,4 @@ class UsersController
 }
 
 
-	?>
+?>

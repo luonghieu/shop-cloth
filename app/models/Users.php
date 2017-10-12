@@ -116,7 +116,7 @@ class Users
 
 	public static function update($edited_User,$id)
 	{
-		$username=$edited_User['username'];
+		
 		$password=$edited_User['password'];
 		$fullname=$edited_User['fullname'];
 		$email=$edited_User['email'];
@@ -125,9 +125,9 @@ class Users
 		$level=$edited_User['level'];
 		$avatar=$edited_User['avatar'];
 
-		$query="UPDATE users SET username= ?, password= ?, fullname= ?, email= ?, phone= ?, address= ?, level= ?, avatar= ?	WHERE id= ?";
+		$query="UPDATE users SET password= ?, fullname= ?, email= ?, phone= ?, address= ?, level= ?, avatar= ?	WHERE id= ?";
 		$params=array(
-			'username'=>$username,
+		
 			'password'=>$password,
 			'fullname'=>$fullname,
 			'email'=>$email,
@@ -146,13 +146,37 @@ class Users
 		return App::get('database')->query_excute_params($query,array('active'=>$active,'id'=>$id));	
 	}
 
-
+	//login
 
 	public static function checkLogin($username,$pass) {
 		$query = "SELECT * FROM users WHERE active =1 AND level !=3 AND username=? AND password =md5(?)";
 
 		return App::get('database')->query_fetch_params($query,array('username'=>$username,'password'=>$pass));
 	}
+
+	public static function checkEmail($email) {
+	   $query = "SELECT * FROM users WHERE active =?  AND email=?";
+	   
+	   $data = array(
+	   	1 => (int)1,
+	   	2 =>$email,
+	   	
+	   );
+               return App::get('database')->query_fetch_params($query,$data);
+ 	}
+ 	//Get password
+
+ 	public static function getPass($id,$pass) {
+ 	    $query = "UPDATE users SET password =md5(?) WHERE active =?  AND id =?";
+
+                    $data = array(
+                        1 => $pass,
+                        2 =>1,
+                        3 =>$id
+                        
+                    );
+                    return App::get('database')->query_excute_params($query,$data);
+ 	}
 
 	public static function search($search_User)
 	{
@@ -183,8 +207,8 @@ class Users
 			$params['level']=$level;
 		}
 
-		return App::get('database')->query_fetch_params($query,$params);
 
+		return App::get('database')->query_fetch_params($query,$params);
 	}
 
 	public static function auth($id)
